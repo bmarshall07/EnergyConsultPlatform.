@@ -66,4 +66,57 @@
       <label for="reviews">Client Reviews:</label>
       <textarea id="reviews" rows="4" placeholder="Share client reviews"></textarea>
 
-      <lab
+      <label for="image">Profile Image:</label>
+      <input type="file" id="image" accept="image/*" required>
+
+      <button type="button" class="btn" onclick="submitForm()">Submit</button>
+    </form>
+  </div>
+  <script type="module">
+    import { database, storage } from "./firebaseConfig.js";
+    import { ref as dbRef, push } from "firebase/database";
+    import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+
+    async function submitForm() {
+      const name = document.getElementById("name").value;
+      const expertise = document.getElementById("expertise").value;
+      const portfolio = document.getElementById("portfolio").value;
+      const certifications = document.getElementById("certifications").value;
+      const reviews = document.getElementById("reviews").value;
+      const imageFile = document.getElementById("image").files[0];
+
+      if (!name || !expertise || !imageFile) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      try {
+        // Upload image to Firebase Storage
+        const imageRef = storageRef(storage, `profiles/${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+
+        // Get image URL
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // Save data to Firebase Realtime Database
+        const profile = {
+          name,
+          expertise,
+          portfolio,
+          certifications,
+          reviews,
+          imageUrl,
+        };
+        await push(dbRef(database, "consultants"), profile);
+
+        alert("Profile submitted successfully!");
+        document.getElementById("consultantForm").reset();
+        window.location.href = "consultants.html"; // Redirect to consultants page
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Failed to submit profile. Please try again.");
+      }
+    }
+  </script>
+</body>
+</html>
