@@ -13,10 +13,15 @@
     }
     .form-container {
       max-width: 600px;
-      margin: 20px auto;
+      margin: 50px auto;
       padding: 20px;
       background: #1f1f1f;
       border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      text-align: center;
+      color: #00c7ff;
     }
     label {
       display: block;
@@ -30,10 +35,13 @@
       border-radius: 5px;
     }
     .btn {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 10px;
       background-color: #00c7ff;
       color: #000000;
-      text-decoration: none;
+      font-weight: bold;
+      text-transform: uppercase;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -44,61 +52,18 @@
     <h1>Join the Experts</h1>
     <form id="consultantForm">
       <label for="name">Name:</label>
-      <input type="text" id="name" required>
-      
+      <input type="text" id="name" placeholder="Enter your name" required>
+
       <label for="expertise">Expertise:</label>
-      <input type="text" id="expertise" required>
-      
+      <input type="text" id="expertise" placeholder="Enter your area of expertise" required>
+
       <label for="portfolio">Portfolio (link):</label>
-      <input type="url" id="portfolio">
-      
+      <input type="url" id="portfolio" placeholder="https://example.com">
+
       <label for="certifications">Certifications:</label>
-      <textarea id="certifications" rows="4"></textarea>
-      
+      <textarea id="certifications" rows="4" placeholder="List your certifications"></textarea>
+
       <label for="reviews">Client Reviews:</label>
-      <textarea id="reviews" rows="4"></textarea>
-      
-      <label for="image">Profile Image:</label>
-      <input type="file" id="image" accept="image/*" required>
-      
-      <button type="button" class="btn" onclick="submitForm()">Submit</button>
-    </form>
-  </div>
-  <script type="module">
-    import { database, storage } from "./firebaseConfig.js";
-    import { ref as dbRef, push } from "firebase/database";
-    import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+      <textarea id="reviews" rows="4" placeholder="Share client reviews"></textarea>
 
-    async function submitForm() {
-      const name = document.getElementById("name").value;
-      const expertise = document.getElementById("expertise").value;
-      const portfolio = document.getElementById("portfolio").value;
-      const certifications = document.getElementById("certifications").value;
-      const reviews = document.getElementById("reviews").value;
-      const imageFile = document.getElementById("image").files[0];
-
-      // Upload image to Firebase Storage
-      const imageRef = storageRef(storage, `profiles/${imageFile.name}`);
-      await uploadBytes(imageRef, imageFile);
-
-      // Get image URL
-      const imageUrl = await getDownloadURL(imageRef);
-
-      // Save data to Firebase Realtime Database
-      const profile = {
-        name,
-        expertise,
-        portfolio,
-        certifications,
-        reviews,
-        imageUrl,
-      };
-      await push(dbRef(database, "consultants"), profile);
-
-      alert("Profile submitted successfully!");
-      document.getElementById("consultantForm").reset();
-    }
-  </script>
-</body>
-</html>
-
+      <lab
