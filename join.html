@@ -4,34 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join the Experts</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Join the Experts</h1>
-  </header>
-  <main>
-    <form id="join-form">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
+  <h1>Join the Experts</h1>
+  <form id="joinForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required><br>
 
-      <label for="expertise">Expertise:</label>
-      <input type="text" id="expertise" name="expertise" required>
+    <label for="expertise">Expertise:</label>
+    <input type="text" id="expertise" required><br>
 
-      <label for="certifications">Certifications:</label>
-      <input type="text" id="certifications" name="certifications" required>
+    <label for="portfolio">Portfolio:</label>
+    <input type="text" id="portfolio"><br>
 
-      <label for="reviews">Client Reviews:</label>
-      <textarea id="reviews" name="reviews"></textarea>
+    <label for="certifications">Certifications:</label>
+    <input type="text" id="certifications"><br>
 
-      <label for="photo">Upload Photo:</label>
-      <input type="file" id="photo" name="photo" accept="image/*" required>
+    <label for="clientReviews">Client Reviews:</label>
+    <textarea id="clientReviews"></textarea><br>
 
-      <button type="button" id="submit-button">Submit</button>
-    </form>
-  </main>
-  <script src="firebaseConfig.js" type="module"></script>
-  <script src="join.js" type="module"></script>
+    <button type="submit">Submit</button>
+  </form>
+  <script type="module" src="./join.js"></script>
 </body>
 </html>
+
 
