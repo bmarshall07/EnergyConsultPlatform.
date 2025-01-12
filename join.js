@@ -1,42 +1,34 @@
-import { db, storage } from "./firebaseConfig.js";
+import { db } from "./firebaseConfig.js";
 import { ref, push } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
 
-const form = document.getElementById("join-form");
-const submitButton = document.getElementById("submit-button");
+// Get the form element
+const joinForm = document.getElementById("joinForm");
 
-submitButton.addEventListener("click", async () => {
-  const name = document.getElementById("name").value.trim();
-  const expertise = document.getElementById("expertise").value.trim();
-  const certifications = document.getElementById("certifications").value.trim();
-  const reviews = document.getElementById("reviews").value.trim();
-  const photo = document.getElementById("photo").files[0];
+// Handle form submission
+joinForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  if (!name || !expertise || !certifications || !photo) {
-    alert("Please fill out all required fields and upload a photo.");
-    return;
-  }
+  // Get form data
+  const name = document.getElementById("name").value;
+  const expertise = document.getElementById("expertise").value;
+  const portfolio = document.getElementById("portfolio").value;
+  const certifications = document.getElementById("certifications").value;
+  const clientReviews = document.getElementById("clientReviews").value;
 
+  // Save data to Firebase
   try {
-    // Upload photo to Firebase Storage
-    const photoRef = storageRef(storage, `photos/${photo.name}`);
-    const snapshot = await uploadBytes(photoRef, photo);
-    const photoURL = await getDownloadURL(snapshot.ref);
-
-    // Save profile to Firebase Realtime Database
-    const profilesRef = ref(db, "consultant_profiles");
-    await push(profilesRef, {
+    await push(ref(db, "consultants"), {
       name,
       expertise,
+      portfolio,
       certifications,
-      reviews,
-      photoURL,
+      clientReviews,
     });
 
     alert("Profile submitted successfully!");
-    form.reset();
+    joinForm.reset(); // Reset form
   } catch (error) {
-    console.error("Error submitting profile:", error);
-    alert("An error occurred. Please try again.");
+    console.error("Error saving profile:", error);
+    alert("Failed to submit profile. Please try again.");
   }
 });
