@@ -1,47 +1,29 @@
 import { db } from "./firebaseConfig.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
 
-// Get the container where profiles will be displayed
-const container = document.getElementById("consultants-container");
+// Get consultants container
+const consultantsContainer = document.getElementById("consultantsContainer");
 
-if (!container) {
-  console.error("Consultants container not found. Check your HTML file.");
-} else {import { db } from "./firebaseConfig.js";
-import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+// Fetch consultants data from Firebase
+onValue(ref(db, "consultants"), (snapshot) => {
+  consultantsContainer.innerHTML = ""; // Clear existing data
 
-// Get the container where profiles will be displayed
-const container = document.getElementById("consultants-container");
-
-if (!container) {
-  console.error("Consultants container not found. Check your HTML file.");
-} else {
-  // Reference to the consultant_profiles in Firebase
-  const profilesRef = ref(db, "consultant_profiles");
-
-  // Fetch and display consultant profiles
-  onValue(profilesRef, (snapshot) => {
-    container.innerHTML = ""; // Clear the container
-
-    if (snapshot.exists()) {
-      snapshot.forEach((childSnapshot) => {
-        const profile = childSnapshot.val();
-
-        // Create a profile card
-        const profileDiv = document.createElement("div");
-        profileDiv.classList.add("profile-card");
-        profileDiv.innerHTML = `
-          <img src="${profile.photoURL}" alt="${profile.name}" class="profile-photo">
-          <h3>${profile.name}</h3>
-          <p><strong>Expertise:</strong> ${profile.expertise}</p>
-          <p><strong>Certifications:</strong> ${profile.certifications}</p>
-          <p><strong>Reviews:</strong> ${profile.reviews || "No reviews available."}</p>
-        `;
-        container.appendChild(profileDiv);
-      });
-    } else {
-      container.innerHTML = "<p>No consultants found. Be the first to join!</p>";
-    }
-  }, (error) => {
-    console.error("Error fetching profiles:", error);
-  });
-}
+  const consultants = snapshot.val();
+  if (consultants) {
+    Object.values(consultants).forEach((consultant) => {
+      // Create a profile card for each consultant
+      const card = document.createElement("div");
+      card.className = "consultant-card";
+      card.innerHTML = `
+        <h2>${consultant.name}</h2>
+        <p><strong>Expertise:</strong> ${consultant.expertise}</p>
+        ${consultant.portfolio ? `<p><strong>Portfolio:</strong> ${consultant.portfolio}</p>` : ""}
+        ${consultant.certifications ? `<p><strong>Certifications:</strong> ${consultant.certifications}</p>` : ""}
+        ${consultant.clientReviews ? `<p><strong>Client Reviews:</strong> ${consultant.clientReviews}</p>` : ""}
+      `;
+      consultantsContainer.appendChild(card);
+    });
+  } else {
+    consultantsContainer.innerHTML = "<p>No consultants found.</p>";
+  }
+});
