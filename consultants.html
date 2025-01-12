@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consultant Directory</title>
-  <script type="module" src="firebaseConfig.js"></script>
+  <script type="module" src="./firebaseConfig.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #121212;
       color: #ffffff;
+      margin: 0;
+      padding: 0;
     }
     .container {
       max-width: 1200px;
@@ -24,62 +26,11 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
+      margin-top: 30px;
     }
     .profile-card {
       background: #1f1f1f;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      text-align: center;
-    }
-    .profile-card img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-    .profile-card h3 {
-      color: #00c7ff;
-      margin-bottom: 5px;
-    }
-    .profile-card a {
-      color: #00c7ff;
-      text-decoration: none;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Our Consultants</h1>
-    <div class="profile-grid" id="consultantList"></div>
-  </div>
-  <script type="module">
-    import { database } from "./firebaseConfig.js";
-    import { ref, onValue } from "firebase/database";
+      
 
-    const consultantList = document.getElementById("consultantList");
-    const consultantsRef = ref(database, "consultants");
-
-    onValue(consultantsRef, (snapshot) => {
-      consultantList.innerHTML = ""; // Clear the list
-      snapshot.forEach((childSnapshot) => {
-        const data = childSnapshot.val();
-        const profileCard = document.createElement("div");
-        profileCard.className = "profile-card";
-
-        profileCard.innerHTML = `
-          <img src="${data.imageUrl}" alt="${data.name}">
-          <h3>${data.name}</h3>
-          <p><strong>Expertise:</strong> ${data.expertise}</p>
-          ${data.portfolio ? `<p><a href="${data.portfolio}" target="_blank">Portfolio</a></p>` : ""}
-          <p><strong>Certifications:</strong> ${data.certifications || "N/A"}</p>
-          <p><strong>Reviews:</strong> ${data.reviews || "N/A"}</p>
-        `;
-
-        consultantList.appendChild(profileCard);
-      });
-    });
-  </script>
-</body>
-</html>
