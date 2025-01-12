@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join the Experts</title>
   <link rel="stylesheet" href="styles.css">
-  <script type="module" src="join.js" defer></script>
 </head>
 <body>
   <header>
     <h1>Join the Experts</h1>
-    <a href="index.html">Back to Home</a>
   </header>
   <main>
     <form id="join-form">
@@ -18,23 +16,22 @@
       <input type="text" id="name" name="name" required>
 
       <label for="expertise">Expertise:</label>
-      <select id="expertise" name="expertise" required>
-        <option value="reservoir-modeling">Reservoir Modeling</option>
-        <option value="geophysics">Geophysics</option>
-        <option value="petroleum-engineering">Petroleum Engineering</option>
-        <option value="ccs">CCS</option>
-        <option value="hydrogen">Hydrogen</option>
-        <option value="wind">Wind</option>
-      </select>
-
-      <label for="portfolio">Portfolio (link):</label>
-      <input type="url" id="portfolio" name="portfolio" required>
+      <input type="text" id="expertise" name="expertise" required>
 
       <label for="certifications">Certifications:</label>
-      <textarea id="certifications" name="certifications" rows="4" required></textarea>
+      <input type="text" id="certifications" name="certifications" required>
 
-      <button type="submit" class="btn">Submit</button>
+      <label for="reviews">Client Reviews:</label>
+      <textarea id="reviews" name="reviews"></textarea>
+
+      <label for="photo">Upload Photo:</label>
+      <input type="file" id="photo" name="photo" accept="image/*" required>
+
+      <button type="button" id="submit-button">Submit</button>
     </form>
   </main>
+  <script src="firebaseConfig.js" type="module"></script>
+  <script src="join.js" type="module"></script>
 </body>
 </html>
+
