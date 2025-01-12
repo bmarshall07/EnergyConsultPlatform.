@@ -1,21 +1,18 @@
-// Firebase configuration and imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
 
-// Firebase config object
 const firebaseConfig = {
-  apiKey: "AIzaSyDE0fjI0WOtjDwr2Ezex_Y6_5fX1L2_fQQ",
-  authDomain: "energyconsult-7121c.firebaseapp.com",
-  databaseURL: "https://energyconsult-7121c-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "energyconsult-7121c",
-  storageBucket: "energyconsult-7121c.appspot.com",
-  messagingSenderId: "451939541892",
-  appId: "1:451939541892:web:389acc4fca4a47cd8833d1",
-  measurementId: "G-T5TFL800MM",
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const database = getDatabase(app);
-export const storage = getStorage(app);
+const db = getDatabase(app);
+
+export { db };
