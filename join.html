@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join the Experts</title>
-  <script type="module" src="firebaseConfig.js"></script>
+  <script type="module" src="./firebaseConfig.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #121212;
       color: #ffffff;
+      margin: 0;
+      padding: 0;
     }
-    .form-container {
+    .container {
       max-width: 600px;
       margin: 50px auto;
       padding: 20px;
@@ -23,61 +25,81 @@
       text-align: center;
       color: #00c7ff;
     }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
     label {
-      display: block;
-      margin-bottom: 5px;
+      margin-top: 15px;
+    }
+    input, textarea, button {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: none;
+      font-size: 16px;
     }
     input, textarea {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 5px;
+      background: #2b2b2b;
+      color: #ffffff;
     }
-    .btn {
-      width: 100%;
-      padding: 10px;
-      background-color: #00c7ff;
-      color: #000000;
-      font-weight: bold;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 5px;
+    button {
+      background: #00c7ff;
+      color: #ffffff;
       cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #009ace;
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h1>Join the Experts</h1>
+  <div class="container">
+    <h1>Join Our Experts</h1>
     <form id="consultantForm">
       <label for="name">Name:</label>
-      <input type="text" id="name" placeholder="Enter your name" required>
+      <input type="text" id="name" name="name" required>
 
       <label for="expertise">Expertise:</label>
-      <input type="text" id="expertise" placeholder="Enter your area of expertise" required>
+      <input type="text" id="expertise" name="expertise" required>
 
-      <label for="portfolio">Portfolio (link):</label>
-      <input type="url" id="portfolio" placeholder="https://example.com">
+      <label for="portfolio">Portfolio Link:</label>
+      <input type="url" id="portfolio" name="portfolio">
 
       <label for="certifications">Certifications:</label>
-      <textarea id="certifications" rows="4" placeholder="List your certifications"></textarea>
+      <textarea id="certifications" name="certifications" rows="3"></textarea>
 
       <label for="reviews">Client Reviews:</label>
-      <textarea id="reviews" rows="4" placeholder="Share client reviews"></textarea>
+      <textarea id="reviews" name="reviews" rows="3"></textarea>
 
       <label for="image">Profile Image:</label>
       <input type="file" id="image" accept="image/*" required>
 
-      <button type="button" class="btn" onclick="submitForm()">Submit</button>
+      <button type="submit">Submit</button>
     </form>
+    <div class="message" id="message"></div>
   </div>
+
   <script type="module">
     import { database, storage } from "./firebaseConfig.js";
-    import { ref as dbRef, push } from "firebase/database";
+    import { ref, push } from "firebase/database";
     import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
-    async function submitForm() {
+    const form = document.getElementById("consultantForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Collect form data
       const name = document.getElementById("name").value;
       const expertise = document.getElementById("expertise").value;
       const portfolio = document.getElementById("portfolio").value;
@@ -85,38 +107,39 @@
       const reviews = document.getElementById("reviews").value;
       const imageFile = document.getElementById("image").files[0];
 
-      if (!name || !expertise || !imageFile) {
-        alert("Please fill in all required fields.");
+      if (!imageFile) {
+        message.textContent = "Please upload an image.";
         return;
       }
 
       try {
         // Upload image to Firebase Storage
-        const imageRef = storageRef(storage, `profiles/${imageFile.name}`);
-        await uploadBytes(imageRef, imageFile);
+        const storageReference = storageRef(storage, `profile-images/${imageFile.name}`);
+        const snapshot = await uploadBytes(storageReference, imageFile);
+        const imageUrl = await getDownloadURL(snapshot.ref);
 
-        // Get image URL
-        const imageUrl = await getDownloadURL(imageRef);
-
-        // Save data to Firebase Realtime Database
-        const profile = {
+        // Save consultant data to Firebase Database
+        const consultantsRef = ref(database, "consultants");
+        await push(consultantsRef, {
           name,
           expertise,
           portfolio,
           certifications,
           reviews,
           imageUrl,
-        };
-        await push(dbRef(database, "consultants"), profile);
+        });
 
-        alert("Profile submitted successfully!");
-        document.getElementById("consultantForm").reset();
-        window.location.href = "consultants.html"; // Redirect to consultants page
+        // Display success message and reset form
+        message.textContent = "Profile successfully submitted!";
+        message.style.color = "green";
+        form.reset();
       } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("Failed to submit profile. Please try again.");
+        console.error("Error submitting profile:", error);
+        message.textContent = "An error occurred while submitting the profile. Please try again.";
+        message.style.color = "red";
       }
-    }
+    });
   </script>
 </body>
 </html>
+
