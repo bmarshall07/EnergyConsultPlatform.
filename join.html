@@ -4,67 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join the Experts</title>
+  <script type="module" src="firebaseConfig.js"></script>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
       background: #121212;
       color: #ffffff;
-      padding: 20px;
     }
-    form {
+    .form-container {
       max-width: 600px;
-      margin: 0 auto;
-      background: #1f1f1f;
+      margin: 20px auto;
       padding: 20px;
+      background: #1f1f1f;
       border-radius: 8px;
     }
     label {
       display: block;
-      margin: 10px 0 5px;
+      margin-bottom: 5px;
     }
     input, textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       border: none;
       border-radius: 5px;
     }
     .btn {
-      display: inline-block;
       padding: 10px 20px;
-      font-size: 1rem;
       background-color: #00c7ff;
       color: #000000;
       text-decoration: none;
       border-radius: 5px;
-      transition: background-color 0.3s;
       cursor: pointer;
-    }
-    .btn:hover {
-      background-color: #008fbf;
     }
   </style>
 </head>
 <body>
-  <h1>Join the Experts</h1>
-  <form action="#">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+  <div class="form-container">
+    <h1>Join the Experts</h1>
+    <form id="consultantForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+      
+      <label for="expertise">Expertise:</label>
+      <input type="text" id="expertise" required>
+      
+      <label for="portfolio">Portfolio (link):</label>
+      <input type="url" id="portfolio">
+      
+      <label for="certifications">Certifications:</label>
+      <textarea id="certifications" rows="4"></textarea>
+      
+      <label for="reviews">Client Reviews:</label>
+      <textarea id="reviews" rows="4"></textarea>
+      
+      <label for="image">Profile Image:</label>
+      <input type="file" id="image" accept="image/*" required>
+      
+      <button type="button" class="btn" onclick="submitForm()">Submit</button>
+    </form>
+  </div>
+  <script type="module">
+    import { database, storage } from "./firebaseConfig.js";
+    import { ref as dbRef, push } from "firebase/database";
+    import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
-    <label for="expertise">Expertise:</label>
-    <input type="text" id="expertise" name="expertise" required>
+    async function submitForm() {
+      const name = document.getElementById("name").value;
+      const expertise = document.getElementById("expertise").value;
+      const portfolio = document.getElementById("portfolio").value;
+      const certifications = document.getElementById("certifications").value;
+      const reviews = document.getElementById("reviews").value;
+      const imageFile = document.getElementById("image").files[0];
 
-    <label for="portfolio">Portfolio:</label>
-    <textarea id="portfolio" name="portfolio" rows="5" required></textarea>
+      // Upload image to Firebase Storage
+      const imageRef = storageRef(storage, `profiles/${imageFile.name}`);
+      await uploadBytes(imageRef, imageFile);
 
-    <label for="certifications">Certifications:</label>
-    <input type="text" id="certifications" name="certifications" required>
+      // Get image URL
+      const imageUrl = await getDownloadURL(imageRef);
 
-    <label for="reviews">Client Reviews:</label>
-    <textarea id="reviews" name="reviews" rows="3"></textarea>
+      // Save data to Firebase Realtime Database
+      const profile = {
+        name,
+        expertise,
+        portfolio,
+        certifications,
+        reviews,
+        imageUrl,
+      };
+      await push(dbRef(database, "consultants"), profile);
 
-    <button class="btn" type="submit">Submit</button>
-  </form>
+      alert("Profile submitted successfully!");
+      document.getElementById("consultantForm").reset();
+    }
+  </script>
 </body>
 </html>
