@@ -1,9 +1,9 @@
-// Import Firebase SDKs
-import { initializeApp } from "firebase/app";
-import { getDatabase } from "firebase/database";
-import { getStorage } from "firebase/storage";
+// Firebase configuration and imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
 
-// Firebase Configuration
+// Firebase config object
 const firebaseConfig = {
   apiKey: "AIzaSyDE0fjI0WOtjDwr2Ezex_Y6_5fX1L2_fQQ",
   authDomain: "energyconsult-7121c.firebaseapp.com",
@@ -17,7 +17,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const storage = getStorage(app);
-
-export { database, storage };
+export const database = getDatabase(app);
+export const storage = getStorage(app);
