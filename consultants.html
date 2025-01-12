@@ -3,34 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultant Directory</title>
-  <script type="module" src="./firebaseConfig.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #ffffff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #00c7ff;
-    }
-    .profile-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .profile-card {
-      background: #1f1f1f;
-      padding: 20px;
-      border-radius: 8px;
-      
-
+  <title>Our Consultants</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="consultants.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Our Consultants</h1>
+    <a href="index.html">Back to Home</a>
+  </header>
+  <main id="consultants-container">
+    <!-- Consultant profiles will be displayed here -->
+  </main>
+</body>
+</html>
