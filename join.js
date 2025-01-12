@@ -1,21 +1,42 @@
-import { db } from "./firebaseConfig.js";
+import { db, storage } from "./firebaseConfig.js";
 import { ref, push } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
 
-document.getElementById("join-form").addEventListener("submit", function (event) {
-  event.preventDefault();
+const form = document.getElementById("join-form");
+const submitButton = document.getElementById("submit-button");
 
-  const name = document.getElementById("name").value;
-  const expertise = document.getElementById("expertise").value;
-  const portfolio = document.getElementById("portfolio").value;
-  const certifications = document.getElementById("certifications").value;
+submitButton.addEventListener("click", async () => {
+  const name = document.getElementById("name").value.trim();
+  const expertise = document.getElementById("expertise").value.trim();
+  const certifications = document.getElementById("certifications").value.trim();
+  const reviews = document.getElementById("reviews").value.trim();
+  const photo = document.getElementById("photo").files[0];
 
-  const profilesRef = ref(db, "consultant_profiles");
-  const newProfile = { name, expertise, portfolio, certifications };
+  if (!name || !expertise || !certifications || !photo) {
+    alert("Please fill out all required fields and upload a photo.");
+    return;
+  }
 
-  push(profilesRef, newProfile)
-    .then(() => {
-      alert("Profile successfully submitted!");
-      window.location.href = "consultants.html";
-    })
-    .catch((error) => console.error("Error saving profile:", error));
+  try {
+    // Upload photo to Firebase Storage
+    const photoRef = storageRef(storage, `photos/${photo.name}`);
+    const snapshot = await uploadBytes(photoRef, photo);
+    const photoURL = await getDownloadURL(snapshot.ref);
+
+    // Save profile to Firebase Realtime Database
+    const profilesRef = ref(db, "consultant_profiles");
+    await push(profilesRef, {
+      name,
+      expertise,
+      certifications,
+      reviews,
+      photoURL,
+    });
+
+    alert("Profile submitted successfully!");
+    form.reset();
+  } catch (error) {
+    console.error("Error submitting profile:", error);
+    alert("An error occurred. Please try again.");
+  }
 });
