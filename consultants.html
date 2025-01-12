@@ -63,4 +63,23 @@
 
     onValue(consultantsRef, (snapshot) => {
       consultantList.innerHTML = ""; // Clear the list
-      snapshot.forEach((childS
+      snapshot.forEach((childSnapshot) => {
+        const data = childSnapshot.val();
+        const profileCard = document.createElement("div");
+        profileCard.className = "profile-card";
+
+        profileCard.innerHTML = `
+          <img src="${data.imageUrl}" alt="${data.name}">
+          <h3>${data.name}</h3>
+          <p><strong>Expertise:</strong> ${data.expertise}</p>
+          ${data.portfolio ? `<p><a href="${data.portfolio}" target="_blank">Portfolio</a></p>` : ""}
+          <p><strong>Certifications:</strong> ${data.certifications || "N/A"}</p>
+          <p><strong>Reviews:</strong> ${data.reviews || "N/A"}</p>
+        `;
+
+        consultantList.appendChild(profileCard);
+      });
+    });
+  </script>
+</body>
+</html>
